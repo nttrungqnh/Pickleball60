@@ -1,0 +1,14 @@
+{
+  "name": "PICKLEBALL 60 · Nhật ký luyện tập",
+  "short_name": "PICKLEBALL 60",
+  "description": "Nhật ký thử thách Pickleball 60 ngày",
+  "lang": "vi",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F6F9F8",
+  "theme_color": "#0B263B",
+  "icons": [
+    { "src": "./assets/images/pickleball.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

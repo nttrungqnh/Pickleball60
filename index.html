@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0B263B">
+  <meta name="description" content="Nhật ký và thử thách luyện tập Pickleball 60 ngày.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/images/pickleball.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <title>PICKLEBALL 60 · Nhật ký luyện tập</title>
+</head>
+<body>
+  <section class="auth-screen" id="authScreen" aria-live="polite">
+    <div id="authLoading" class="auth-loading" aria-hidden="true"></div>
+    <div class="auth-card hidden" id="authCard"><div class="auth-brand"><span class="brand-icon"><img src="./assets/images/pickleball.svg" alt=""></span><div>PICKLEBALL <b>60</b><small>NHẬT KÝ LUYỆN TẬP</small></div></div><h1></h1><p>Đăng nhập Google để lưu và theo dõi hành trình luyện tập của bạn.</p><div id="authMessage" class="notice hidden"></div><button id="googleSignIn" class="primary-btn auth-button" type="button">◎ <span>Tiếp tục với Google</span></button><small class="privacy-note">Dữ liệu nhật ký được lưu riêng trong tài khoản của bạn.</small></div>
+  </section>
+  <div class="app-shell hidden" id="appShell">
+    <aside class="sidebar"><a class="brand" href="./" aria-label="PICKLEBALL 60, trang chủ"><span class="brand-icon"><img src="./assets/images/pickleball.svg" alt=""></span><span>PICKLEBALL <b>60</b><small>NHẬT KÝ LUYỆN TẬP</small></span></a><div class="side-label">KHÔNG GIAN CỦA BẠN</div><nav class="side-nav" aria-label="Điều hướng chính"><button class="active" data-page="home"><span class="nav-icon">⌂</span>Tổng quan</button><button data-page="calendar"><span class="nav-icon">▦</span>60 ngày</button><button data-page="log"><span class="nav-icon">＋</span>Ghi nhật ký</button><button data-page="progress"><span class="nav-icon">⌁</span>Thành quả</button><button data-page="skills"><span class="nav-icon">◈</span>Bài tập & kỹ thuật</button></nav><div class="sidebar-foot"><img class="avatar" id="userAvatar" alt=""><span id="userName">Người chơi<small>Thử thách cá nhân</small></span><button id="settingsBtn" title="Nhập dữ liệu cũ" aria-label="Nhập dữ liệu cũ">⚙</button><button id="signOut" title="Đăng xuất" aria-label="Đăng xuất">↪</button></div></aside>
+    <main class="main-content"><header class="topbar"><div class="header-title"><span class="eyebrow" id="currentDate"></span><h1 id="pageTitle">Tổng quan</h1><p id="pageSubtitle">Tổng quan hành trình luyện tập của bạn.</p></div><div class="top-actions" id="headerActions"><button class="primary-btn" data-action="log">＋ <span>Ghi nhật ký hôm nay</span></button></div></header>
+      <div class="notice hidden" id="appNotice" role="status"></div>
+      <div id="startupSkeleton" class="startup-skeleton hidden" aria-hidden="true"><div class="skeleton-hero"></div><div class="skeleton-stats"><i></i><i></i><i></i><i></i></div><div class="skeleton-columns"><i></i><i></i></div></div>
+      <section id="page-home" class="page active"></section><section id="page-calendar" class="page"></section><section id="page-log" class="page"></section><section id="page-progress" class="page"></section><section id="page-skills" class="page"></section>
+    </main>
+    <nav class="bottom-nav" aria-label="Điều hướng trên điện thoại"><button class="active" data-page="home"><i>⌂</i>Trang chủ</button><button data-page="calendar"><i>▦</i>60 ngày</button><button data-page="log"><i>＋</i>Nhật ký</button><button data-page="progress"><i>⌁</i>Thành quả</button><button data-page="skills"><i>◈</i>Bài tập</button></nav>
+  </div>
+  <div class="modal-backdrop" id="skillModal" role="dialog" aria-modal="true" aria-labelledby="skillModalTitle"><div class="modal"><div class="modal-head"><h2 id="skillModalTitle">Tạo bài tập / kỹ thuật</h2><button data-close="skillModal" aria-label="Đóng">×</button></div><form id="skillForm"><input type="hidden" id="skillId"><label>Tên bài tập / kỹ thuật<input id="skillName" required maxlength="100" placeholder="Tên bài tập"></label><label>Phân loại<select id="skillType" required><option value="technique">Kỹ thuật đơn lẻ</option><option value="combo">Bài tập phối hợp</option><option value="minigame">Minigame</option></select></label><label>Mục tiêu luyện tập<textarea id="skillDescription" rows="3" maxlength="1000" placeholder="Bạn muốn cải thiện điều gì?"></textarea></label><label>Thời lượng mục tiêu (phút)<input id="skillTarget" type="number" min="1" max="1440" step="1" placeholder="20"></label><label>Video YouTube / TikTok (mỗi link một dòng)<textarea id="skillVideos" rows="3" maxlength="4000" placeholder="Dán link video"></textarea></label><div class="modal-actions"><button type="button" class="secondary-btn" data-close="skillModal">Hủy</button><button class="primary-btn" type="submit">Lưu bài tập</button></div></form></div></div>
+  <div class="modal-backdrop" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="modal modal-wide"><div id="detailContent"></div><div class="modal-actions"><button class="secondary-btn" data-close="detailModal">Đóng</button></div></div></div>
+  <div class="modal-backdrop" id="importModal" role="dialog" aria-modal="true" aria-labelledby="importTitle"><div class="modal"><div class="modal-head"><h2 id="importTitle">Nhập dữ liệu cũ</h2><button data-close="importModal" aria-label="Đóng">×</button></div><p class="card-sub">Nhập tệp JSON đã xuất từ ứng dụng PICKLEBALL 60 cũ. Các nhật ký cùng ngày/thử thách sẽ được cập nhật.</p><label>Tệp JSON<input type="file" id="legacyFile" accept="application/json,.json"></label><div id="importMessage" class="notice hidden"></div><div class="modal-actions"><button class="secondary-btn" data-close="importModal">Hủy</button><button class="primary-btn" id="importLegacy" type="button">Nhập vào tài khoản</button></div></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script type="module" src="./assets/js/app.js"></script>
+</body>
+</html>

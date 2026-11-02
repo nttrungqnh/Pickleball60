@@ -1,0 +1,108 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedInAs(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+    function validDate(value) {
+      return value is string && value.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+    }
+    function validProfile(data) {
+      return data.keys().hasOnly(['displayName', 'photoURL', 'createdAt', 'updatedAt'])
+        && data.keys().hasAll(['displayName', 'photoURL', 'createdAt', 'updatedAt'])
+        && data.displayName is string && data.displayName.size() <= 100
+        && data.photoURL is string && data.photoURL.size() <= 1000
+        && data.createdAt is timestamp && data.updatedAt is timestamp;
+    }
+    function validChallenge(data) {
+      return data.keys().hasOnly(['name', 'startDate', 'durationDays', 'isActive', 'createdAt', 'updatedAt'])
+        && data.keys().hasAll(['name', 'startDate', 'durationDays', 'isActive', 'createdAt', 'updatedAt'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && validDate(data.startDate)
+        && data.durationDays is int && data.durationDays == 60
+        && data.isActive is bool
+        && data.createdAt is timestamp && data.updatedAt is timestamp;
+    }
+    function validVideoAt(videos, index) {
+      return videos.size() <= index || (videos[index] is string && videos[index].size() <= 1000 && videos[index].matches('^https://.*$'));
+    }
+    function validVideos(videos) {
+      return videos is list && videos.size() <= 20
+        && validVideoAt(videos, 0) && validVideoAt(videos, 1) && validVideoAt(videos, 2) && validVideoAt(videos, 3)
+        && validVideoAt(videos, 4) && validVideoAt(videos, 5) && validVideoAt(videos, 6) && validVideoAt(videos, 7)
+        && validVideoAt(videos, 8) && validVideoAt(videos, 9) && validVideoAt(videos, 10) && validVideoAt(videos, 11)
+        && validVideoAt(videos, 12) && validVideoAt(videos, 13) && validVideoAt(videos, 14) && validVideoAt(videos, 15)
+        && validVideoAt(videos, 16) && validVideoAt(videos, 17) && validVideoAt(videos, 18) && validVideoAt(videos, 19);
+    }
+    function validExercise(data) {
+      return data.keys().hasOnly(['name', 'description', 'type', 'targetMinutes', 'imageUrl', 'videos', 'archived', 'createdAt', 'updatedAt'])
+        && data.keys().hasAll(['name', 'description', 'type', 'targetMinutes', 'imageUrl', 'videos', 'archived', 'createdAt', 'updatedAt'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.description is string && data.description.size() <= 1000
+        && data.type in ['technique', 'combo', 'minigame']
+        && (data.targetMinutes == null || (data.targetMinutes is int && data.targetMinutes >= 1 && data.targetMinutes <= 1440))
+        && data.imageUrl is string && data.imageUrl.size() <= 1000
+        && validVideos(data.videos)
+        && data.archived is bool
+        && data.createdAt is timestamp && data.updatedAt is timestamp;
+    }
+    function validLogItem(item) {
+      return item is map
+        && item.keys().hasOnly(['exerciseId', 'exerciseName', 'exerciseType', 'durationMinutes', 'rating', 'note', 'basketCount', 'gameCount'])
+        && item.keys().hasAll(['exerciseId', 'exerciseName', 'exerciseType', 'durationMinutes', 'rating', 'note', 'basketCount', 'gameCount'])
+        && item.exerciseId is string && item.exerciseId.size() > 0 && item.exerciseId.size() <= 150
+        && item.exerciseName is string && item.exerciseName.size() > 0 && item.exerciseName.size() <= 100
+        && item.exerciseType in ['technique', 'combo', 'minigame']
+        && item.durationMinutes is int && item.durationMinutes >= 1 && item.durationMinutes <= 1440
+        && (item.rating == null || (item.rating is int && item.rating >= 1 && item.rating <= 10))
+        && item.note is string && item.note.size() <= 500
+        && item.basketCount is int && item.basketCount >= 0 && item.basketCount <= 500
+        && item.gameCount is int && item.gameCount >= 0 && item.gameCount <= 500
+        && (item.exerciseType == 'minigame' ? item.basketCount == 0 : item.gameCount == 0);
+    }
+    function validItemAt(items, index) {
+      return items.size() <= index || validLogItem(items[index]);
+    }
+    function validItems(items) {
+      return items is list && items.size() > 0 && items.size() <= 20
+        && validItemAt(items, 0) && validItemAt(items, 1) && validItemAt(items, 2) && validItemAt(items, 3)
+        && validItemAt(items, 4) && validItemAt(items, 5) && validItemAt(items, 6) && validItemAt(items, 7)
+        && validItemAt(items, 8) && validItemAt(items, 9) && validItemAt(items, 10) && validItemAt(items, 11)
+        && validItemAt(items, 12) && validItemAt(items, 13) && validItemAt(items, 14) && validItemAt(items, 15)
+        && validItemAt(items, 16) && validItemAt(items, 17) && validItemAt(items, 18) && validItemAt(items, 19);
+    }
+    function validTrainingLog(data, challengeId, logId) {
+      return data.keys().hasOnly(['challengeId', 'trainingDate', 'generalNote', 'items', 'createdAt', 'updatedAt'])
+        && data.keys().hasAll(['challengeId', 'trainingDate', 'generalNote', 'items', 'createdAt', 'updatedAt'])
+        && data.challengeId is string && data.challengeId == challengeId
+        && validDate(data.trainingDate)
+        && logId == challengeId + '_' + data.trainingDate
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid)/challenges/$(challengeId))
+        && data.generalNote is string && data.generalNote.size() <= 2000
+        && validItems(data.items)
+        && data.createdAt is timestamp && data.updatedAt is timestamp;
+    }
+
+    match /users/{uid}/profile/{profileId} {
+      allow read: if signedInAs(uid) && profileId == 'main';
+      allow create, update: if signedInAs(uid) && profileId == 'main' && validProfile(request.resource.data);
+      allow delete: if false;
+    }
+    match /users/{uid}/challenges/{challengeId} {
+      allow read: if signedInAs(uid);
+      allow create: if signedInAs(uid) && validChallenge(request.resource.data);
+      allow update: if signedInAs(uid) && validChallenge(request.resource.data);
+      allow delete: if false;
+    }
+    match /users/{uid}/exercises/{exerciseId} {
+      allow read: if signedInAs(uid);
+      allow create, update: if signedInAs(uid) && validExercise(request.resource.data);
+      allow delete: if signedInAs(uid);
+    }
+    match /users/{uid}/trainingLogs/{logId} {
+      allow read: if signedInAs(uid);
+      allow create, update: if signedInAs(uid) && validTrainingLog(request.resource.data, request.resource.data.challengeId, logId);
+      allow delete: if signedInAs(uid);
+    }
+  }
+}
