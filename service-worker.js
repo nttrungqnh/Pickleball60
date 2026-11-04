@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pickleball60-shell-v1';
+const CACHE_NAME = 'pickleball60-shell-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './firebase-config.js', './assets/css/style.css', './assets/js/app.js', './assets/images/pickleball.svg'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));

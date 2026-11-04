@@ -42,7 +42,7 @@ Các thư viện ngoài được ghim phiên bản trong source: Firebase JavaSc
 
 ## 5. Triển khai Firestore Security Rules
 
-Trong Firebase Console → Firestore Database → Rules, dán nội dung `firestore.rules` rồi bấm Publish. Rules yêu cầu người dùng đã đăng nhập và UID trên đường dẫn phải bằng `request.auth.uid`. Quy tắc giới hạn kích thước/kiểu dữ liệu, phút 1–1440, điểm 1–10, ghi chú, video HTTPS và tối đa 20 kỹ thuật trong một nhật ký.
+Trong Firebase Console → Firestore Database → Rules, dán nội dung `firestore.rules` rồi bấm Publish. Rules yêu cầu người dùng đã đăng nhập và UID trên đường dẫn phải bằng `request.auth.uid`. Quy tắc giới hạn kích thước/kiểu dữ liệu, phút 1–1440, điểm 1–10, ghi chú, video HTTPS và tối đa 20 kỹ thuật trong một nhật ký. Nhật ký phân biệt `practice` (luyện tập), `social` (giao lưu) và `rest` (nghỉ tập); giao lưu tính là ngày hoạt động, nghỉ tập không cộng chuỗi.
 
 Mọi dữ liệu của người dùng khác bị từ chối. Không thay rules bằng quyền đọc/ghi công khai.
 
@@ -60,8 +60,8 @@ Commit toàn bộ source, bao gồm `index.html`, `assets/`, `firebase-config.js
 ## 8. Kiểm tra website
 
 1. Đăng nhập Google.
-2. Tạo, sửa, lưu trữ và khôi phục bài tập; thêm link video.
-3. Ghi nhật ký, đổi ngày, sửa và xóa nhật ký; xác nhận một ngày/thử thách chỉ có một bản ghi.
+2. Tạo, sửa và xóa bài tập; thêm link video.
+3. Chọn Luyện tập, Giao lưu hoặc Nghỉ tập cho từng ngày; ghi nhật ký, đổi ngày, sửa và xóa nhật ký; xác nhận một ngày/thử thách chỉ có một bản ghi.
 4. Kiểm tra lịch 60 ngày, thời lượng, điểm tự đánh giá và biểu đồ.
 5. Thử với một tài khoản Google khác để xác nhận chỉ thấy dữ liệu của tài khoản đó.
 

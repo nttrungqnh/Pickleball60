@@ -72,14 +72,17 @@ service cloud.firestore {
         && validItemAt(items, 16) && validItemAt(items, 17) && validItemAt(items, 18) && validItemAt(items, 19);
     }
     function validTrainingLog(data, challengeId, logId) {
-      return data.keys().hasOnly(['challengeId', 'trainingDate', 'generalNote', 'items', 'createdAt', 'updatedAt'])
+      return data.keys().hasOnly(['challengeId', 'trainingDate', 'activityType', 'generalNote', 'items', 'createdAt', 'updatedAt'])
         && data.keys().hasAll(['challengeId', 'trainingDate', 'generalNote', 'items', 'createdAt', 'updatedAt'])
+        && (!('activityType' in data) || data.activityType in ['practice', 'social', 'rest'])
         && data.challengeId is string && data.challengeId == challengeId
         && validDate(data.trainingDate)
         && logId == challengeId + '_' + data.trainingDate
         && exists(/databases/$(database)/documents/users/$(request.auth.uid)/challenges/$(challengeId))
         && data.generalNote is string && data.generalNote.size() <= 2000
-        && validItems(data.items)
+        && ((!('activityType' in data) || data.activityType == 'practice')
+          ? validItems(data.items)
+          : data.items is list && data.items.size() == 0)
         && data.createdAt is timestamp && data.updatedAt is timestamp;
     }
 
